@@ -11,30 +11,7 @@ CREATE TABLE IF NOT EXISTS admintable (
 );
 INSERT INTO admintable VALUES (1, 'ABC');
 
-#cust_address
-CREATE TABLE IF NOT EXISTS customer_addr (
-    ID INT NOT NULL,
-    pincode VARCHAR(15) NOT NULL,
-    full_addr VARCHAR(255) NOT NULL,
-    FOREIGN KEY (ID) REFERENCES customers(ID)
-);
 
-#agent_address
-CREATE TABLE IF NOT EXISTS agent_addr(
-    ID INT NOT NULL,
-    pincode VARCHAR(15) NOT NULL,
-    full_addr VARCHAR(255) NOT NULL,
-    FOREIGN KEY (ID) REFERENCES delivery_agent(ID)
-);
-
-
-#supplier_address
-CREATE TABLE IF NOT EXISTS supplier_addr(
-    ID INT NOT NULL,
-    pincode VARCHAR(15) NOT NULL,
-    full_addr VARCHAR(255) NOT NULL,
-    FOREIGN KEY (ID) REFERENCES supplier(ID)
-);
 
 #delivery_agent
 CREATE TABLE IF NOT EXISTS delivery_agent (
@@ -105,6 +82,32 @@ CREATE TABLE IF NOT EXISTS supplier (
     pass VARCHAR(50) NOT NULL,
     PRIMARY KEY (ID),
     FOREIGN KEY (address_ID) REFERENCES address(ID),
+);
+
+
+#cust_address
+CREATE TABLE IF NOT EXISTS customer_addr (
+    ID INT NOT NULL,
+    pincode VARCHAR(15) NOT NULL,
+    full_addr VARCHAR(255) NOT NULL,
+    FOREIGN KEY (ID) REFERENCES customers(ID)
+);
+
+#agent_address
+CREATE TABLE IF NOT EXISTS agent_addr(
+    ID INT NOT NULL,
+    pincode VARCHAR(15) NOT NULL,
+    full_addr VARCHAR(255) NOT NULL,
+    FOREIGN KEY (ID) REFERENCES delivery_agent(ID)
+);
+
+
+#supplier_address
+CREATE TABLE IF NOT EXISTS supplier_addr(
+    ID INT NOT NULL,
+    pincode VARCHAR(15) NOT NULL,
+    full_addr VARCHAR(255) NOT NULL,
+    FOREIGN KEY (ID) REFERENCES supplier(ID)
 );
 
 #product
