@@ -50,3 +50,6 @@ def login_member(role,id):
     data=role;idd=id
     data,idd=idd,data
     return render_template("base.html")
+
+if __name__=="__main__":
+    app.run(debug=True)

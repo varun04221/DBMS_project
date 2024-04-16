@@ -4,7 +4,8 @@ def connect_database():
     database=mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="root"
+        passwd="root",
+        database="everweave"
     )
     return database
 
@@ -15,7 +16,6 @@ def validate_login(role,email,password):
     database=connect_database()
     try:
         cursor=database.cursor()
-        cursor.execute("use everweave")
         cursor.execute(f"select ID from {role} where email='{email}' and password='{password}'")
         data=cursor.fetchall()
         if len(data)==0:
@@ -30,7 +30,6 @@ def register(role,name,email,password):
     database=connect_database()
     try:
         cursor=database.cursor()
-        cursor.execute("use everweave")
         cursor.execute(f"insert into {role}(name,email,password) values('{name}','{email}','{password}')")
         database.commit()
     finally:
@@ -40,7 +39,6 @@ def email_already_registered(role,email):
     database=connect_database()
     try:
         cursor=database.cursor()
-        cursor.execute("use everweave")
         cursor.execute(f"select * from {role} where email='{email}'")
         data=cursor.fetchall()
     finally:
@@ -54,7 +52,6 @@ if __name__=="__main__":
     print(validate_login('customer','jingle@ajd','password'))
     database=connect_database()
     cursor=database.cursor()
-    cursor.execute("use everweave")
     cursor.execute("select * from customer")
     data=cursor.fetchall()
     print(data)
