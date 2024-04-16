@@ -44,6 +44,14 @@ def login_page():
             return redirect(redirect_add)
     return render_template("login.html")
 
+@app.route("/supplier")
+def supplier():
+    return render_template("supplier.html")
+
+@app.route("/delivery")
+def delivery():
+    return render_template("delivery.html")
+
 
 @app.route("/<role>/<id>")
 def login_member(role,id):
