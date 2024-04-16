@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainable Clothing</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/base.css') }}">
+</head>
+<body>
+    <header>
+        <h1>EVERWEAVE</h1>
+        <div class="navbar">
+            <a id="home" href="#">Home</a>
+            <a id="my_orders" href="#">Delivery Management</a>
+            <div class="dropdown">
+                <button class="dropbtn">Delivery Status</button>
+                <div class="dropdown-content">
+                    <a href="#">Pending</a>
+                    <a href="#">Items Delivered</a>
+                </div>
+            </div>
+            <a id="contact" href="#">My Reviews</a>
+            <div class="search-container">
+                <form action="/search" method="get">
+                    <input type="text" placeholder="Search..." name="search">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+        
+    </header>
+
+    <div id="image_container">
+        <img id="image1" src="https://www.texcoms.com/wp-content/uploads/2018/08/sustainable-clothing.jpg"/>
+    </div>
+
+    <main>
+        <section id="featured">
+            <h2>Featured Products</h2>
+            <!-- Add featured products here -->
+        </section>
+        <section id="new-arrivals">
+            <h2>New Arrivals</h2>
+            <!-- Add new arrivals here -->
+        </section>
+        <section id="newsletter">
+            <h2>Subscribe to Our Newsletter</h2>
+            <form action="#" method="POST">
+                <input type="email" name="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 EVERWEAVE. All rights reserved.</p>
+    </footer>
+</body>
+</html>
