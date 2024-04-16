@@ -9,20 +9,24 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = '/tmp/flask_session'
 Session(app)
 
+@app.route("/",methods=["GET","POST"])
 @app.route("/register",methods=["GET","POST"])
 def register_page():
     if request.method=="POST":
         name=request.form.get('name')
         email=request.form.get('email')
         password=request.form.get('password')
+        phone=request.form.get('phone')
+        pincode=request.form.get('pincode')
+        address=request.form.get('address')
         confirm_password=request.form.get('confirm_password')
         register_as=request.form.getlist('register_as')[0]
         
-        mssg=validate(name,email,password,confirm_password,register_as)
+        mssg=validate(name,email,password,confirm_password,register_as,phone,pincode,address)
         if len(mssg):
             flash(mssg)
         else:
-            register(register_as,name,email,password)
+            register(register_as,name,email,password,phone,address,pincode)
             flash("Registered Successfully!\n Please try logging in.")
     return render_template("register.html")
 
@@ -57,7 +61,7 @@ def delivery():
 def login_member(role,id):
     data=role;idd=id
     data,idd=idd,data
-    return render_template("base.html")
+    return render_template(f"{role}.html")
 
 if __name__=="__main__":
     app.run(debug=True)

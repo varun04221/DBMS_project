@@ -26,11 +26,11 @@ def validate_login(role,email,password):
         disconnect_database(database)
     return data
 
-def register(role,name,email,password):
+def register(role,name,email,password,phone,address,pincode):
     database=connect_database()
     try:
         cursor=database.cursor()
-        cursor.execute(f"insert into {role}(name,email,password) values('{name}','{email}','{password}')")
+        cursor.execute(f"insert into {role}(name,email,password,phone,address,pincode) values('{name}','{email}','{password}','{phone}','{address}','{pincode}')")
         database.commit()
     finally:
         disconnect_database(database)
