@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainable Clothing</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/supplier_profile.css') }}">
+</head>
+<body>
+    <header>
+        <h1>EVERWEAVE</h1>
+        <div class="navbar">
+            <a id="home" href="./home">Home</a></li>
+            <a id="orders" href="./orders">My Orders</a>
+            <a id="account" href="./account">My Account</a>
+            <a id="reviews" href="./reviews">My Reviews</a>
+            <a id="cart" href="./cart">My Cart</a>
+            <a id="logout" href="/register">Log Out</a>
+            <div class="search-container">
+                <form action="/search" method="get">
+                    <input type="text" placeholder="Search..." name="search">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <div class="profile">
+            <h1>Customer Profile</h1>
+        <div>
+            <label for="id">Customer ID:</label>
+            <span id="id">{{ data[0] }}</span>
+        </div>
+        <div>
+            <label for="name">Name:</label>
+            <span id="name">{{ data[1] }}</span>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <span id="email">{{ data[2] }}</span>
+        </div>
+        <div>
+            <label for="phone">Phone:</label>
+            <span id="phone">{{ data[3] }}</span>
+        </div>
+        <div>
+            <label for="address">Address:</label>
+            <span id="address">{{ data[5] }}</span>
+        </div>
+        <div>
+            <label for="pincode">Pincode:</label>
+            <span id="pincode">{{ data[4] }}</span>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 EVERWEAVE. All rights reserved.</p>
+    </footer>
+</body>
+</html>

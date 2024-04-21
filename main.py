@@ -1,7 +1,7 @@
 from flask import Flask,render_template,flash,request,redirect
-from database_manager import validate_login,register
+from database_manager import *
 from flask_session import Session
-from additional import validate
+from additional import *
 
 app = Flask(__name__)
 app.secret_key='E09Yx_eEu1znZNPcg-XaR0FJH6ZbOjeK'
@@ -30,8 +30,6 @@ def register_page():
             flash("Registered Successfully!\n Please try logging in.")
     return render_template("register.html")
 
-
-
 @app.route("/login",methods=["GET","POST"])
 def login_page():
 
@@ -44,24 +42,102 @@ def login_page():
         if idd==0:
             flash("Invalid Login Details")
         else:
-            redirect_add=f"/{role}/{idd}"
+            redirect_add=f"/{role}/{idd}/home"
             return redirect(redirect_add)
     return render_template("login.html")
 
-@app.route("/supplier")
-def supplier():
+@app.route("/customer/<id>/home")
+def login_customer(id):
+    data=get_all_products()
+    check=len(data)==1
+    return render_template("customer.html",table_data=data,check=check)
+
+@app.route("/supplier/<id>/home")
+def login_supplier(id):
     return render_template("supplier.html")
 
-@app.route("/delivery")
-def delivery():
-    return render_template("delivery.html")
+@app.route("/delivery_agent/<id>/home")
+def login_delivery_agent(id):
+    return render_template("delivery_agent.html")
 
+@app.route("/supplier/<id>/management")
+def supplier_management(id):
+    data=get_supplier_product(id)
+    empty=(len(data)==1)
+    return render_template("supplier_management.html",table_data=data,check=empty)
 
-@app.route("/<role>/<id>")
-def login_member(role,id):
-    data=role;idd=id
-    data,idd=idd,data
-    return render_template(f"{role}.html")
+@app.route("/supplier/<id>/management/add_product",methods=["GET","POST"])
+def add_product(id):
+    if request.method=="POST":
+        name=request.form.get('name')
+        price=float(request.form.get('price'))
+        quantity=int(request.form.get('quantity'))
+        material=request.form.get('material')
+        desc=request.form.get('product_description')
+        gender=request.form.getlist('gender')[0]
+
+        mssg=validate_product_addition(name,price,quantity,material)
+        if len(mssg):
+            flash(mssg)
+        else:
+            add_supplier_product(id,name,price,quantity,material,desc,gender)
+            flash("Product Added Successfully!")
+
+    return render_template("add_product.html")
+
+@app.route("/supplier/<id>/management/update_quantity",methods=["GET","POST"])
+def update_quantity(id):
+    if request.method=="POST":
+        proid=int(request.form.get('name'))
+        updqnty=int(request.form.get('price'))
+
+        if check_seller(proid,id):
+            seller_update_quantity(proid,updqnty)
+            flash("Quantity Updated Successfully")
+        else:
+            flash("Invalid Product ID Entered")
+    return render_template("update_quantity.html")
+
+@app.route("/supplier/<id>/management/remove_product",methods=["POST","GET"])
+def remove_product(id):
+    if request.method=="POST":
+        proid=int(request.form.get('name'))
+
+        if check_seller(proid,id):
+            delete_product(proid)
+            flash("Product Deleted Successfully Successfully")
+        else:
+            flash("Invalid Product ID Entered")
+    return render_template("remove_product.html")
+
+@app.route("/supplier/<id>/pending_supplies")
+def pending_supplies(id):
+    data=get_supplier_product(id)
+    empty=(len(data)==1)
+    return render_template("pending_supplies.html",heading="Heading",heading_2="heading2",dialogue="Dialogue",table_data=data,check=empty)
+
+@app.route("/supplier/<id>/delivered")
+def supplier_delivered(id):
+    data=get_supplier_product(id)
+    empty=(len(data)==1)
+    return render_template("supplier_items_delivered.html",heading="Heading",heading_2="heading2",dialogue="Dialogue",table_data=data,check=empty)
+
+@app.route("/supplier/<id>/reviews")
+def supplier_reviews(id):
+    data=get_supplier_product(id)
+    empty=(len(data)==1)
+    return render_template("supplier_reviews.html",heading="Heading",heading_2="heading2",dialogue="Dialogue",table_data=data,check=empty)
+
+@app.route("/supplier/<id>/account")
+def supplier_profile(id):
+    data=extract_profile("supplier",id)
+    return render_template("supplier_profile.html",data=data)
+
+@app.route("/customer/<id>/account")
+def customer_profile(id):
+    data=extract_profile("customer",id)
+    return render_template("customer_profile.html",data=data)
+    
 
 if __name__=="__main__":
     app.run(debug=True)

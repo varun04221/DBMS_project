@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sustainable Clothing</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/supplier.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/supplier_profile.css') }}">
 </head>
 <body>
     <header>
@@ -27,27 +27,34 @@
         
     </header>
 
-    <div id="image_container">
-        <img id="image1" src="https://www.texcoms.com/wp-content/uploads/2018/08/sustainable-clothing.jpg"/>
+    <div class="profile">
+            <h1>Seller Profile</h1>
+        <div>
+            <label for="id">Seller ID:</label>
+            <span id="id">{{ data[0] }}</span>
+        </div>
+        <div>
+            <label for="name">Name:</label>
+            <span id="name">{{ data[1] }}</span>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <span id="email">{{ data[2] }}</span>
+        </div>
+        <div>
+            <label for="phone">Phone:</label>
+            <span id="phone">{{ data[3] }}</span>
+        </div>
+        <div>
+            <label for="address">Address:</label>
+            <span id="address">{{ data[5] }}</span>
+        </div>
+        <div>
+            <label for="pincode">Pincode:</label>
+            <span id="pincode">{{ data[4] }}</span>
+        </div>
     </div>
 
-    <main>
-        <section id="featured">
-            <h2>Featured Products</h2>
-            <!-- Add featured products here -->
-        </section>
-        <section id="new-arrivals">
-            <h2>New Arrivals</h2>
-            <!-- Add new arrivals here -->
-        </section>
-        <section id="newsletter">
-            <h2>Subscribe to Our Newsletter</h2>
-            <form action="#" method="POST">
-                <input type="email" name="email" placeholder="Enter your email" required>
-                <button type="submit">Subscribe</button>
-            </form>
-        </section>
-    </main>
     <footer>
         <p>&copy; 2024 EVERWEAVE. All rights reserved.</p>
     </footer>

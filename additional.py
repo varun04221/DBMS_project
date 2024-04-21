@@ -15,3 +15,15 @@ def validate(name,email,password1,password2,role,phone,pincode,address):
     if len(address)>256:
         error+="Address should not exceed 256 characters\n"
     return error
+
+def validate_product_addition(name,price,quantity,material):
+    error=""
+    if len(name)>50:
+        error+="Product name is too long.\n"
+    if price<=0:
+        error+="Invalid Price.\n"
+    if quantity<=0 or int(quantity)!=quantity:
+        error+="Invalid Quantity.\n"
+    if len(material)>100:
+        error+="Product material name is too long.\n"
+    return error

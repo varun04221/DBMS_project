@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sustainable Clothing</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/supplier.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/supplier_reviews.css') }}">
 </head>
 <body>
     <header>
-        <h1>EVERWEAVE</h1>
+        <h1>{{ heading }}</h1>
         <div class="navbar">
             <a id="home" href="./home">Home</a>
-            <a id="my_orders" href="./management">Supplier Management</a>
+            <a id="management" href="./management">Supplier Management</a>
             <a id="pending_supplies" href="./pending_supplies">Pending Supplies</a>
             <a id="items_delivered" href="./delivered">Items Delivered</a>
             <a id="reviews" href="./reviews">My Reviews</a>
@@ -24,30 +24,35 @@
                 </form>
             </div>
         </div>
-        
     </header>
 
-    <div id="image_container">
-        <img id="image1" src="https://www.texcoms.com/wp-content/uploads/2018/08/sustainable-clothing.jpg"/>
+    <div class="data">
+        <h1>{{ heading_2 }}</h1>
+    {% if check %}
+        <p>{{ dialogue }}</p>
+    {% else %}
+        <table border="1">
+            <thead>
+                <tr>
+                    {% for header in table_data[0] %}
+                        <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in table_data[1:] %}
+                    <tr>
+                        {% for column in row %}
+                            <td>{{ column }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
     </div>
 
-    <main>
-        <section id="featured">
-            <h2>Featured Products</h2>
-            <!-- Add featured products here -->
-        </section>
-        <section id="new-arrivals">
-            <h2>New Arrivals</h2>
-            <!-- Add new arrivals here -->
-        </section>
-        <section id="newsletter">
-            <h2>Subscribe to Our Newsletter</h2>
-            <form action="#" method="POST">
-                <input type="email" name="email" placeholder="Enter your email" required>
-                <button type="submit">Subscribe</button>
-            </form>
-        </section>
-    </main>
+
     <footer>
         <p>&copy; 2024 EVERWEAVE. All rights reserved.</p>
     </footer>
