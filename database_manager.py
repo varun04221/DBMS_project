@@ -4,7 +4,7 @@ def connect_database():
     database=mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="root",
+        passwd="soham@2004",
         database="everweave"
     )
     return database
@@ -57,7 +57,53 @@ def extract_profile(role,id):
         cursor.close()
         database.close()
     return data
+def extract_cart(id):
+    database = connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select * from cart where customerID={id}")
+        data=cursor.fetchall()
+        print(data)
+    finally:
+        cursor.close()
+        database.close()
+    return data
 
+
+def extract_reviews(id):
+    database = connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select * from cust_reviews where customerID={id}")
+        data=cursor.fetchall()
+        # print(data)
+    finally:
+        cursor.close()
+        database.close()
+    return data
+    
+
+def extract_orders(id):
+    database = connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select * from ORDER_desription where customerID={id}")
+        data=cursor.fetchall()
+    finally:
+        cursor.close()
+        database.close()
+    return data
+
+def not_exist_order(id, orderid, productid):
+    database = connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select * from ORDER_desription where customerID={id} and orderID={orderid} and productID={productid}")
+        data=cursor.fetchall()
+    finally:
+        cursor.close()
+        database.close()
+    return len(data)==0
 def customer_reviews(id):
     database=connect_database()
     try:
@@ -169,7 +215,151 @@ def delete_product(id):
     finally:
         cursor.close()
         database.close()
+        
+def product_not_availaible(product_id,quantity):
+    database=connect_database()
+    try:
+        
+        cursor=database.cursor()
+        product = "product"
+        cursor.execute(f"select * from {product} where quantity<{quantity} and productID={product_id}")
+        data=cursor.fetchall()
+    finally:
+        cursor.close()
+        database.close()
+    return len(data)>0
 
+def check_cart(id,product_id):
+    set=0
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cart = "cart"
+        cursor.execute(f"select * from {cart} where customerID={id} and productID={product_id}")
+        data=cursor.fetchall()
+    finally:
+        cursor.close()
+        database.close()
+    if len(data)>0: set=1
+    return set
+
+def check_cart_remove(id,product_id):
+    set=0
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cart = "cart"
+        cursor.execute(f"select * from {cart} where customerID={id} and productID={product_id}")
+        data=cursor.fetchall()
+    finally:
+        cursor.close()
+        database.close()
+    if len(data)>0: set=1
+    return set
+
+def add_to_cart(id,product_id,quantity):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"insert into cart(customerID,productID, quantity) values({id},{product_id},{quantity})")
+        database.commit()
+    finally:
+        cursor.close()
+        database.close()
+
+def update_cart(id,product_id,quantity):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"SELECT quantity FROM cart where customerID = {id} and productID = {product_id}")
+        data = cursor.fetchall()
+        quantity+= int(data[0][0])
+        cursor.execute(f"update cart set quantity = {quantity} where customerID={id} and productID={product_id}")
+        database.commit()
+    finally:
+        cursor.close()
+        database.close()
+
+def del_cart(id, product_id):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"delete from cart where customerID={id} and productID={product_id}")
+        database.commit()
+    finally:
+        cursor.close()
+        database.close()
+        
+def address_not_added(id,address,pincode):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select * from customer where ID = {id} and address={address} and pincode={pincode}")
+        data=cursor.fetchall()
+    finally:
+        cursor.close()
+        database.close()
+    return len(data)==0
+    
+def orders_check(id):
+    database=connect_database()
+    error=""
+    set=0
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select * from cart where customerID = {id}")
+        data=cursor.fetchall()
+        for i in range(len(data)):
+            cursor.execute(f"select quantity from product where productID = {data[i][1]}")
+            compare = cursor.fetchall()
+            if(data[i][2] > compare[0][0]):
+                set=1
+                error+="Product ID: "+str(data[i][1])+" is out of stock\n"
+            else:
+                set =1 
+            
+            # data[i]+=cursor.fetchall()[0]
+    finally:
+        if (set == 0):
+            error += "Cart is empty"
+        cursor.close()
+        database.close()
+    return error
+    
+def add_order(id,address,pincode):
+    database= connect_database()
+    try:
+        cursor = database.cursor()
+        cursor.execute(f"insert into orders(customerID,address,pincode) values({id},'{pincode}',{address})")
+        database.commit()
+        cursor.execute(f"select orderID from orders where customerID = {id}")
+        data1 = cursor.fetchall()
+        order_id = data1[len(data1)-1][0]
+        cursor.execute(f"select * from cart where customerID={id}")
+        data=cursor.fetchall()
+        for i in range(len(data)):
+            cursor.execute(f"insert into ORDER_desription(orderID,customerID,productID,quantity) values({order_id},{id},{data[i][1]},{data[i][2]})")
+            database.commit()
+            cursor.execute(f"update product set quantity=quantity-{data[i][2]} where productID={data[i][1]}")
+            database.commit()
+        cursor.execute(f"delete from cart where customerID={id}")
+        database.commit()
+    finally:
+        cursor.close()
+        database.close()
+def add_reviews(id, orderid, productid,reviews):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"insert into cust_reviews(orderID,customerID,productID, review) values({orderid},{id},{productid},{reviews})")
+        database.commit()
+    finally:
+        cursor.close()
+        database.close()
+    
+    
+    
+    
 if __name__=="__main__":
     print(extract_profile('supplier',1))
     #print(get_supplier_product(1))

@@ -50,7 +50,8 @@ def login_page():
 def login_customer(id):
     data=get_all_products()
     check=len(data)==1
-    return render_template("customer.html",table_data=data,check=check)
+    prof=extract_profile("customer",id)
+    return render_template("customer.html",table_data=data,check=check,profile=prof)
 
 @app.route("/supplier/<id>/home")
 def login_supplier(id):
@@ -137,7 +138,81 @@ def supplier_profile(id):
 def customer_profile(id):
     data=extract_profile("customer",id)
     return render_template("customer_profile.html",data=data)
-    
 
+@app.route("/customer/<id>/add_cart" ,methods = ["GET", "POST"])
+def add_cart(id):
+    if request.method=="POST":
+        product_id=int(request.form.get('productid'))
+        quantity=int(request.form.get('quantity'))
+        mssg=validate_availability(product_id,quantity)
+        if len(mssg):
+            flash(mssg)
+        else:
+            check = check_cart(id,product_id)
+            if(check):
+                update_cart(id,product_id,quantity)
+                flash("Updated Cart Successfully")
+            else:
+                add_to_cart(id,product_id,quantity)
+                flash("Product Added Successfully!")
+    return render_template("add_cart.html")
+    
+@app.route("/customer/<id>/remove_cart" ,methods = ["GET", "POST"])
+def remove_cart(id):
+    if request.method=="POST":
+        product_id=int(request.form.get('name'))
+        check = check_cart_remove(id,product_id)
+        if(check):
+            del_cart(id,product_id)
+            flash("Product Removed from Cart Successfully")
+        else:
+            flash("Product Not Found In Cart")
+    return render_template("remove_product.html")
+    
+@app.route("/customer/<id>/cart")
+def view_cart(id):
+    data =extract_cart(id)
+    return render_template("view_cart.html", data = data)
+
+@app.route("/customer/<id>/orders", methods=["GET", "POST"])
+def view_orders(id):
+    data =extract_orders(id)
+    return render_template("view_orders.html", data = data)
+
+@app.route("/customer/<id>/order", methods=["GET", "POST"])
+def order_items(id):
+    if request.method=="POST":
+        address=request.form.get('address')
+        pincode=request.form.get('pincode')
+        mssg1=validate_address(id,address,pincode)
+        mssg2 = validate_order(id)
+        if len(mssg1):
+            flash(mssg1)
+        elif (len(mssg2)):
+            flash(mssg2)
+        else:
+            add_order(id,address,pincode)
+            flash("Order Placed Successfully!")
+    return render_template("orders.html")
+    
+@app.route("/customer/<id>/review", methods=["GET", "POST"])
+def add_review(id):
+    if request.method=="POST":
+        orderID=request.form.get('orderid')
+        productID=request.form.get('productid')
+        review = request.form.get('review')
+        msg = validate_request(id, orderID , productID)
+        if len(msg):
+            flash(msg)
+        else:
+            add_reviews(id,orderID,productID,review)
+            flash("Review Added Successfully!")
+    return render_template("add_review.html")
+
+@app.route("/customer/<id>/reviews" , methods = ["GET", "POST"])
+def all_reviews(id):
+    data = extract_reviews(id)
+    return render_template("all_reviews.html", data = data)
+    
 if __name__=="__main__":
     app.run(debug=True)
