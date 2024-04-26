@@ -172,12 +172,14 @@ def remove_cart(id):
 @app.route("/customer/<id>/cart")
 def view_cart(id):
     data =extract_cart(id)
-    return render_template("view_cart.html", data = data)
+    check=(len(data)==1)
+    return render_template("view_cart.html", table_data = data,check=check)
 
 @app.route("/customer/<id>/orders", methods=["GET", "POST"])
 def view_orders(id):
     data =extract_orders(id)
-    return render_template("view_orders.html", data = data)
+    check=(len(data)==1)
+    return render_template("view_orders.html", table_data = data,check=check)
 
 @app.route("/customer/<id>/order", methods=["GET", "POST"])
 def order_items(id):
@@ -212,7 +214,8 @@ def add_review(id):
 @app.route("/customer/<id>/reviews" , methods = ["GET", "POST"])
 def all_reviews(id):
     data = extract_reviews(id)
-    return render_template("all_reviews.html", data = data)
+    check=(len(data)==1)
+    return render_template("all_reviews.html", table_data = data,check=check)
     
 if __name__=="__main__":
     app.run(debug=True)

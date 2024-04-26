@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sustainable Clothing</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/supplier_profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/view_cart.css') }}">
 </head>
 <body>
     <header>
         <h1>EVERWEAVE</h1>
         <div class="navbar">
             <a id="home" href="./home">Home</a></li>
-            <a id="orders" href="./orders">My Orders</a>
-            <a id="account" href="./account">My Account</a>
-            <a id="reviews" href="./reviews">My Reviews</a>
+            <a id="my_orders" href="./orders">My Orders</a>
+            <a id="my_account" href="./account">My Account</a>
+            <a id="my_reviews" href="./reviews">My Reviews</a>
             <a id="cart" href="./cart">My Cart</a>
             <a id="logout" href="/register">Log Out</a>
             <div class="search-container">
@@ -25,24 +25,52 @@
         </div>
     </header>
 
-    <div class="profile">
-        <h1>Customer Profile</h1>
-        <div>
-            <label for="product_id">Product ID</label>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <label for="quantity">Quantity</label>
+    
+    {% if check %}
+        <h1>No Item in cart.</h1>
+    {% else %}
+        <div class="data">
+            <h1>Your Orders</h1>
+            <table border="1">
+                <thead>
+                    <tr>
+                        {% for header in table_data[0] %}
+                            <th>{{ header }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in table_data[1:] %}
+                        <tr>
+                            {% for column in row %}
+                                <td>{{ column }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        {% for entry in data %}
-            <div>
-                <label>{{ entry[1] }}</label>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a class="button" href="./order">Order Cart Items</a>
 
-                <span>{{ entry[2] }}</span>
-            </div>
-        {% endfor %}
-    </div>
+    {% endif %}
+    
+    <main>
+        <section id="featured">
+            <h2>Featured Products</h2>
+            <!-- Add featured products here -->
+        </section>
+        <section id="new-arrivals">
+            <h2>New Arrivals</h2>
+            <!-- Add new arrivals here -->
+        </section>
+        <section id="newsletter">
+            <h2>Subscribe to Our Newsletter</h2>
+            <form action="#" method="POST">
+                <input type="email" name="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </section>
+    </main>
     <footer>
         <p>&copy; 2024 EVERWEAVE. All rights reserved.</p>
     </footer>

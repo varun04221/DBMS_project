@@ -4,7 +4,7 @@ def connect_database():
     database=mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="soham@2004",
+        passwd="root",
         database="everweave"
     )
     return database
@@ -57,13 +57,15 @@ def extract_profile(role,id):
         cursor.close()
         database.close()
     return data
+    
 def extract_cart(id):
     database = connect_database()
     try:
         cursor=database.cursor()
-        cursor.execute(f"select * from cart where customerID={id}")
-        data=cursor.fetchall()
-        print(data)
+        data=[["Product ID","Product Name","Supplier ID","Price","Gender","Material","Description","Quantity"]]
+        cursor.execute(f"SELECT p.productID, p.name, p.supplierID, p.price, p.gender, p.material, p.product_description,od.quantity AS order_quantity FROM cart od INNER JOIN product p ON od.productID = p.productID WHERE od.customerID = {id};")
+        data+=cursor.fetchall()
+        #print(data)
     finally:
         cursor.close()
         database.close()
@@ -73,9 +75,10 @@ def extract_cart(id):
 def extract_reviews(id):
     database = connect_database()
     try:
+        data=[["ReviewID","OrderID","CustomerID","ProductID","Review"]]
         cursor=database.cursor()
         cursor.execute(f"select * from cust_reviews where customerID={id}")
-        data=cursor.fetchall()
+        data+=cursor.fetchall()
         # print(data)
     finally:
         cursor.close()
@@ -87,8 +90,9 @@ def extract_orders(id):
     database = connect_database()
     try:
         cursor=database.cursor()
-        cursor.execute(f"select * from ORDER_desription where customerID={id}")
-        data=cursor.fetchall()
+        data=[["Order ID","Product ID","Product Name","Supplier ID","Price","Gender","Material","Description","Quantity"]]
+        cursor.execute(f"SELECT od.orderID, p.productID, p.name, p.supplierID, p.price, p.gender, p.material, p.product_description,od.quantity AS order_quantity FROM order_desription od INNER JOIN product p ON od.productID = p.productID WHERE od.orderID = {id};")
+        data+=cursor.fetchall()
     finally:
         cursor.close()
         database.close()
@@ -294,7 +298,7 @@ def address_not_added(id,address,pincode):
     database=connect_database()
     try:
         cursor=database.cursor()
-        cursor.execute(f"select * from customer where ID = {id} and address={address} and pincode={pincode}")
+        cursor.execute(f"select * from customer where ID = {id} and address='{address}' and pincode={int(pincode)}")
         data=cursor.fetchall()
     finally:
         cursor.close()
