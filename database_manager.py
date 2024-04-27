@@ -1,4 +1,5 @@
 import mysql.connector
+from random import randint
 
 def connect_database():
     database=mysql.connector.connect(
@@ -65,7 +66,6 @@ def extract_cart(id):
         data=[["Product ID","Product Name","Supplier ID","Price","Gender","Material","Description","Quantity"]]
         cursor.execute(f"SELECT p.productID, p.name, p.supplierID, p.price, p.gender, p.material, p.product_description,od.quantity AS order_quantity FROM cart od INNER JOIN product p ON od.productID = p.productID WHERE od.customerID = {id};")
         data+=cursor.fetchall()
-        #print(data)
     finally:
         cursor.close()
         database.close()
@@ -329,18 +329,33 @@ def orders_check(id):
         cursor.close()
         database.close()
     return error
+
+def revenue_sup(id,quantity,price):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"update supplier set products_sold=products_sold+{quantity} where ID={id}")
+        database.commit()
+        cursor.execute(f"update supplier set revenue=revenue+{quantity*price} where ID={id}")
+        database.commit()
+    finally:
+        cursor.close()
+        database.close()
     
 def add_order(id,address,pincode):
     database= connect_database()
     try:
         cursor = database.cursor()
-        cursor.execute(f"insert into orders(customerID,address,pincode) values({id},'{pincode}',{address})")
+        cursor.execute(f"insert into orders(customerID,address,pincode,delID) values({id},'{pincode}',{address},{delivery_agent_avlbl()})")
         database.commit()
         cursor.execute(f"select orderID from orders where customerID = {id}")
         data1 = cursor.fetchall()
         order_id = data1[len(data1)-1][0]
         cursor.execute(f"select * from cart where customerID={id}")
         data=cursor.fetchall()
+        cart_values=extract_cart(id)
+        for ele in cart_values[1:]:
+            revenue_sup(ele[2],ele[7],ele[3])
         for i in range(len(data)):
             cursor.execute(f"insert into ORDER_desription(orderID,customerID,productID,quantity) values({order_id},{id},{data[i][1]},{data[i][2]})")
             database.commit()
@@ -351,6 +366,7 @@ def add_order(id,address,pincode):
     finally:
         cursor.close()
         database.close()
+
 def add_reviews(id, orderid, productid,reviews):
     database=connect_database()
     try:
@@ -360,11 +376,118 @@ def add_reviews(id, orderid, productid,reviews):
     finally:
         cursor.close()
         database.close()
+
+def get_undelivered_products(id):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select * from orders where delID={id} and delivery_status={False}")
+        data=[["OrderID","CustomerID","Pincode","Address","Delivery status","Delivery Agent ID"]]
+        data+=cursor.fetchall()
+    finally:
+        cursor.close()
+        database.close()
+    return data
+
+def get_delivered_products(id):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select * from orders where delID={id} and delivery_status={True}")
+        data=[["OrderID","CustomerID","Pincode","Address","Delivery status","Delivery Agent ID"]]
+        data+=cursor.fetchall()
+    finally:
+        cursor.close()
+        database.close()
+    return data
+
+def get_delivery_status(id):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select active_status from delivery_agent where ID={id}")
+        data=cursor.fetchall()[0]
+    finally:
+        cursor.close()
+        database.close()
+    return data[0]
+
+def change_delivery_status(id):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"update delivery_agent set active_status=NOT active_status where ID={id}")
+        database.commit()
+    finally:
+        cursor.close()
+        database.close()
+
+def delivery_agent_avlbl():
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select ID from delivery_agent where active_status=true")
+        data=cursor.fetchall()
+        if len(data):
+            data=data[randint(0,len(data)-1)][0]
+        else:
+            data=-1
+    finally:
+        cursor.close()
+        database.close()
+    return data
+
+def check_order(delid,orderid):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select * from orders where delID={delid} and orderID={orderid}")
+        data=cursor.fetchall()
+    finally:
+        cursor.close()
+        database.close()
+    return len(data)
+
+def deliver_order(orderid,delid):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"update orders set delivery_status=true where orderID={orderid}")
+        database.commit()
+        cursor.execute(f"update delivery_agent set orders_delivered=orders_delivered+1 where ID={delid}")
+        database.commit()
+    finally:
+        cursor.close()
+        database.close()
+
+def dagent_home(id):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select orders_delivered from delivery_agent where ID={id}")
+        data=cursor.fetchall()[0][0]
+    finally:
+        cursor.close()
+        database.close()
+    return data
+
+def supply_home(id):
+    database=connect_database()
+    try:
+        cursor=database.cursor()
+        cursor.execute(f"select products_sold,revenue from supplier where ID={id}")
+        data=cursor.fetchall()[0]
+    finally:
+        cursor.close()
+        database.close()
+    return data[0],data[1]
     
     
     
     
 if __name__=="__main__":
-    print(extract_profile('supplier',1))
+    # print(extract_profile('supplier',1))
     #print(get_supplier_product(1))
-    print(check_seller(1,5))
+    #print(check_seller(1,5))
+    print(dagent_home(1))
+    print(supply_home(1))

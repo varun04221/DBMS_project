@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/deliver.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Mark Order as Delivered</h1>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form id="registerform" method="POST">
+            <div class="form-group">
+                <label for="orderid">Order ID</label>
+                <input type="orderid" id="orderid" name="orderid" required>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Mark Order as Delivered">
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

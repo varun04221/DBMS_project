@@ -55,11 +55,13 @@ def login_customer(id):
 
 @app.route("/supplier/<id>/home")
 def login_supplier(id):
-    return render_template("supplier.html")
+    prosold,revenue=supply_home(id)
+    return render_template("supplier.html",prosold=prosold,revenue=revenue)
 
 @app.route("/delivery_agent/<id>/home")
 def login_delivery_agent(id):
-    return render_template("delivery_agent.html")
+    orcom=dagent_home(id)
+    return render_template("delivery_agent.html",orcom=orcom)
 
 @app.route("/supplier/<id>/management")
 def supplier_management(id):
@@ -216,6 +218,45 @@ def all_reviews(id):
     data = extract_reviews(id)
     check=(len(data)==1)
     return render_template("all_reviews.html", table_data = data,check=check)
+
+@app.route("/delivery_agent/<id>/undelivered")
+def undelivered_orders(id):
+    data=get_undelivered_products(id)
+    check=(len(data)==1)
+    return render_template("undelivered_orders.html",table_data=data,check=check)
+
+@app.route("/delivery_agent/<id>/delivered")
+def delivered_orders(id):
+    data=get_delivered_products(id)
+    check=(len(data)==1)
+    return render_template("delivered_orders.html",table_data=data,check=check)
+
+@app.route("/delivery_agent/<id>/status")
+def delivery_agent_status(id):
+    status=get_delivery_status(id)
+    return render_template("delivery_agent_status.html",status=status)
+
+@app.route("/delivery_agent/<id>/change_status")
+def change_status(id):
+    change_delivery_status(id)
+    return "Status Changed Successfully"
+
+@app.route("/delivery_agent/<id>/account")
+def delivery_agent_account(id):
+    data=extract_profile("delivery_agent",id)
+    return render_template("delivery_agent_profile.html",data=data)
+
+@app.route("/delivery_agent/<id>/deliver",methods=["GET","POST"])
+def deliver_product(id):
+    if request.method=="POST":
+        orderID=request.form.get('orderid')
+        if check_order(id,orderID):
+            deliver_order(orderID)
+            flash("Order Delivered Successfully!")
+        else:
+            flash("Invalid Details Entered.")
+    return render_template("deliver.html")
+
     
 if __name__=="__main__":
     app.run(debug=True)

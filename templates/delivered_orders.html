@@ -4,24 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sustainable Clothing</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/view_orders.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/delivered_orders.css') }}">
 </head>
 <body>
     <header>
         <h1>EVERWEAVE</h1>
         <div class="navbar">
-            <a id="home" href="./home">Home</a></li>
-            <a id="my_orders" href="./orders">My Orders</a>
-            <a id="my_account" href="./account">My Account</a>
-            <a id="my_reviews" href="./reviews">My Reviews</a>
-            <a id="cart" href="./cart">My Cart</a>
-            <a id="logout" href="/register">Log Out</a>
+            <a id="home" href="./home">Home</a>
+            <a id="undelivered" href="./undelivered">Undelivered Orders</a>
+            <a id="delivered" href="./delivered">Delivered Orders</a>
+            <a id="status" href="./status">My Status</a>
+            <a id="account" href="./account">My Account</a>
+            <a id="logout" href="/register">Logout</a>
         </div>
+        
     </header>
 
     
     {% if check %}
-        <h1>No Have not placed any order yet place a order now.</h1>
+        <h1>No Order Delivered Yet.</h1>
     {% else %}
         <div class="data">
             <h1>Your Orders</h1>
@@ -44,7 +45,6 @@
                 </tbody>
             </table>
         </div>
-            <a class="button" href="./review">Add a Review</a>
     {% endif %}
     
     <footer>

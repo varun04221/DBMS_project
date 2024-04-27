@@ -1,4 +1,4 @@
-from database_manager import email_already_registered , product_not_availaible, address_not_added, orders_check, not_exist_order
+from database_manager import *
 
 def validate(name,email,password1,password2,role,phone,pincode,address):
     error=""
@@ -46,6 +46,8 @@ def validate_address(id,address,pincode):
 
 def validate_order(id):
     error= orders_check(id)
+    if delivery_agent_avlbl()==-1:
+        error+="Currently there is not delivery agent available. Please try ordering in a while.\n"
     return error
 
 def validate_request(id,orderid,productid):

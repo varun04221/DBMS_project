@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sustainable Clothing</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/delivery_agent.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/delivery_agent_status.css') }}">
 </head>
 <body>
     <header>
@@ -20,25 +20,13 @@
         
     </header>
 
-    <div class="profile">
-        <h1>Delivery Partner Report</h1>
-        <div>
-            <label for="id">Total Orders Delivered:</label>
-            <span id="id">{{ orcom }}</span>
-        </div>
-        <br>
-        <div>
-            <label for="pincode">Total Income:</label>
-            <span id="pincode">{{ orcom*40 }}</span>
-        </div>
-    </div>
-
-    <br>
-
-    <div id="image_container">
-        <img id="image1" src="https://www.texcoms.com/wp-content/uploads/2018/08/sustainable-clothing.jpg"/>
-    </div>
-
+    
+    {% if status %}
+        <h1>Your Delivery Status is Active.</h1>
+    {% else %}
+        <h1>Your Delivery Status is Inactive.</h1>
+    {% endif %}
+    <a class="button" href="./change_status">Change My Status</a>
     
     <footer>
         <p>&copy; 2024 EVERWEAVE. All rights reserved.</p>

@@ -53,23 +53,18 @@ header {
 }
 
 
-#pending_supplies{
+#delivered{
     font-style: bold;
     font-weight: bolder;
 }
 
-.button{
-    text-decoration: none;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+#image1{
+    width: 100%;
+    height: 50%;
 }
 
-.data{
-    margin: 5%;
+main {
+    padding: 20px;
 }
 
 footer {
@@ -77,4 +72,41 @@ footer {
     color: #fff;
     text-align: center;
     padding: 10px 0;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background-color: #3498DB;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
 }

@@ -19,7 +19,9 @@ CREATE TABLE IF NOT EXISTS delivery_agent (
     phone VARCHAR(10) NOT NULL,
     password varchar(20) not null,
     pincode varchar(6) not null,
-    address varchar(255) not null, 
+    address varchar(255) not null,
+    active_status bool not null default false,
+    orders_delivered int not null default 0,
     PRIMARY KEY (ID)
 );
 
@@ -45,6 +47,8 @@ CREATE TABLE IF NOT EXISTS supplier (
     password varchar(20) not null,
 	pincode varchar(6) not null,
     address varchar(255) not null,
+    products_sold int not null default 0,
+    revenue int not null default 0,
     PRIMARY KEY (ID)
 );
 
@@ -87,6 +91,8 @@ CREATE TABLE IF NOT EXISTS orders(
 	customerID INT NOT NULL,
     pincode varchar(6) not null,
     address varchar(255) not null,
+    delivery_status boolean not null default false,
+    delID int not null,
     primary key(orderID),
     Foreign KEY(customerID) REFERENCES customer(ID)
 );
@@ -114,5 +120,8 @@ CREATE TABLE IF NOT EXISTS cust_reviews(
 
 
 
--- insert into customer(name,email,password,orders_placed)
--- values('takla','takla@gmail','password',0);
+-- insert into delivery_agent(name,email,password,phone,pincode,address)
+-- values('takla','takla@gmail','password','1234567890','123456','123');
+
+-- insert into supplier(name,email,password,phone,pincode,address)
+-- values('takla','takla@gmail','password','1234567890','123456','123');
