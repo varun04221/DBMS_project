@@ -30,7 +30,7 @@ label {
 }
 input[type="orderid"],
 input[type="productid"],
-input[type="review"]{
+input[type="text"]{
     width: 100%;
     padding: 10px;
     border-radius: 5px;

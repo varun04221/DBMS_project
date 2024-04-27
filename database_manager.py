@@ -346,7 +346,7 @@ def add_order(id,address,pincode):
     database= connect_database()
     try:
         cursor = database.cursor()
-        cursor.execute(f"insert into orders(customerID,address,pincode,delID) values({id},'{pincode}',{address},{delivery_agent_avlbl()})")
+        cursor.execute(f"insert into orders(customerID,address,pincode,delID) values({id},'{pincode}','{address}',{delivery_agent_avlbl()})")
         database.commit()
         cursor.execute(f"select orderID from orders where customerID = {id}")
         data1 = cursor.fetchall()
@@ -371,7 +371,7 @@ def add_reviews(id, orderid, productid,reviews):
     database=connect_database()
     try:
         cursor=database.cursor()
-        cursor.execute(f"insert into cust_reviews(orderID,customerID,productID, review) values({orderid},{id},{productid},{reviews})")
+        cursor.execute(f"insert into cust_reviews(orderID,customerID,productID, review) values({orderid},{id},{productid},'{reviews}')")
         database.commit()
     finally:
         cursor.close()

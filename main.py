@@ -251,7 +251,7 @@ def deliver_product(id):
     if request.method=="POST":
         orderID=request.form.get('orderid')
         if check_order(id,orderID):
-            deliver_order(orderID)
+            deliver_order(orderID,id)
             flash("Order Delivered Successfully!")
         else:
             flash("Invalid Details Entered.")
